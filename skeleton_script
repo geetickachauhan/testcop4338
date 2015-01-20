@@ -1,0 +1,12 @@
+#!bin/bash
+mkdir cop4338 && pushd cop4338
+mkdir xtracredit
+n='0 1 2 3 4'
+p='proj'
+for i in $n;
+do
+mkdir -p $p$i/report
+mkdir $p$i/test
+touch $p$i/makefile $p$i/report/$p$i.txt $p$i/test/makefile
+done
+popd
