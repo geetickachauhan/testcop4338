@@ -1,0 +1,21 @@
+void A(File *f)
+{    
+    char array[100][81];
+    int numOfLines = 0;
+    
+    printf("\nPrinting lines in reverse order of input\n");
+    
+    char line[81]; // starting to extract lines 
+    
+    while(fgets(line, sizeof(line), f))
+    {
+        strcpy(array[numOfLines++], line);
+    }
+    
+    for(int i = numOfLines - 1; i >= 0; i--)
+    {
+        for(int j = 0; j < strlen(array[i]) - 1; j++)
+            printf("%c", array[i][j]);
+        printf("\n");
+    }
+}
