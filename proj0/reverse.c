@@ -35,9 +35,9 @@ int main(int argc, const char *argv[])
 
 	// a switch statement to call the function according to the user's choice
 	switch(*argv[2]){
-		case 'A': A(file); break;
-		case 'B': B(file); break;
-		case 'C': C(file); break;
+		case 'A': partA(file); break;
+		case 'B': partB(file); break;
+		case 'C': partC(file); break;
 		default: printf("Invalid argument to reverse. Please refer to README for list of options and arguments.");
 	}
 

@@ -33,7 +33,7 @@ int main(int argc, const char *argv[])
 		exit(0);
 	}
 
-	// call appropriate method refered to by argv[2], print error message otherwise 
+	// a switch statement to call the function according to the user's choice
 	switch(*argv[2]){
 		case 'A': A(file); break;
 		case 'B': B(file); break;
