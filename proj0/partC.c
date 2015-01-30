@@ -16,7 +16,7 @@ void partC(FILE *f){
 		line[--len] = '\0';
 		char* word;
 		int i = 0;
-		word = strtok(line, "\n ");
+		word = strtok(line, " ");
 		while((word != NULL)){
 			words[i] = word;
 			word = strtok(NULL, " ");
