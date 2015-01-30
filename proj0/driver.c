@@ -11,14 +11,13 @@ int partB(char *);
 int partC(char *);
 */
 
-int main(int args, char *argv[])
-{
+int main(int argc, const char *argv[]){
     /* checks for bad arguments before running program
      * if there are more or less than 3 arguments
      * or either are null or invalid, then program 
      * exits with error message
      */
-    if(args != 3 || argv[1] == NULL || argv[2] == NULL) 
+    if(argc != 3 || argv[1] == NULL || argv[2] == NULL) 
     {
         printf("Please run again.\n");
         exit(0); 
