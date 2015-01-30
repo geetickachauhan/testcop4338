@@ -5,8 +5,7 @@ C program that prints a file’s content in reverse.
 
 Usage
 -----
-
-reverse <path-to-text> <reverse-subroutine>
+reverse path-to-text subroutine
 
 ex: reverse documents/example.txt A
 
@@ -15,15 +14,16 @@ The program assumes each line is terminated by a new-line character “\n”
 
 Arguments
 ---------
-
 The first argument <path-to-text> may be a path to any text document.
-
 The second argument <reverse-subroutine> may be either “A”, “B”, or “C”.
 
 Subroutines
 -----------
-
 A: Prints out the lines of the file starting from the bottom to the top of the file.
-B: Prints out each line of the file in reverse order
-C: Print out the words of each line in reverse order
+B: Prints out each line of the file in reverse order.
+C: Print out the words of each line in reverse order.
+
+License
+-------
+reverse is Copyright (c) 2015 Tyler Lozano, Geeticka Chauhan. It is free software, and may be redistributed under the terms specified in the LICENSE file.
 
