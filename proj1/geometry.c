@@ -1,19 +1,27 @@
-#include <math.h>
+#include<stdio.h>
+#include<math.h>
 
 // generic typedef to allow for type independent operations, otherwise multiple fns required
 // points are merely topologies with one point and magnitude equal to their x dimension
 // although distance from origin might be more appropriate
-typedef struct _Topology {
+typedef struct _Topology 
+{
 	Point *pts;
 	float magnitude;
 } Topology;
 
 // struct used to define Topology since a topology is just a collection of points
-typedef struct _Point {
+typedef struct _Point
+{
 	float x;
 	float y;
 } Point;
 
+typedef struct LinkedList
+{
+    Topology T;
+    struct LinkedList *next;
+}LL;
 /* grows the array dynamically and catches realloc fail so as to prevent memory leak
  * need to keep pointer to array size to call this functional iteratively
  */
@@ -30,12 +38,13 @@ Point* grow_array(Point* pts, int* size)
 
 Point* parse_points(FILE *f)
 {
-	unsigned int* size; size* = 16;
+	unsigned int* size; size* = 16; // size of two floats is 16
 	unsigned int i = 0;
 	Point* pts = pts[16];
 	while((fscanf(f, "%f %f %*[\n]", x, y)) != EOF)
 	{
-		if (++i > size) {
+		if (++i > size) 
+                {
 			grow_array(pts, size);
 		}
 		Point p;
@@ -73,8 +82,33 @@ int comp(const void *t1, const void *t2)
 {
 	Topology t1 = *((Topology*) t1);
 	Topology t2 = *((Topology*) t2);
-	if (t1->magnitude > t2->magnitude) return 1;
-	if (t1->magnitude < t2->magnitude) return -1;
+        //should be t1.magnitude since t1 is not a pointer
+	if (t1.magnitude > t2.magnitude) return 1;
+	if (t1.magnitude < t2.magnitude) return -1;
 	return 0;
 }
 
+int main(int argc, const char*argv[])
+{
+    if(argc != 3)
+    {
+        printf("reverse only takes 2 arguments, you passed %d.\n", (argc-1));
+        exit(0);
+    }
+    
+    FILE *file;
+    if((file = fopen(argv[1], "r")) == NULL)
+    {
+        perror("FOPEN");
+        exit(0);
+    }
+    return(0);
+    switch(*argv[2]){
+		case 'A': partA(file); break;
+		case 'B': partB(file); break;
+		case 'C': partC(file); break;
+                case 'D': partD(file); break;
+		default: printf("Invalid argument to reverse. Please refer to README for list of options and arguments.");
+	}
+
+}
