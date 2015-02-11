@@ -21,12 +21,14 @@ typedef struct _Point
 typedef struct _LinkedListPoints
 {
     Point p;
+    int size;
     struct _LinkedListPoints *next;
 }LinkedListPoints;
 
 typedef struct _LinkedListShapes
 {
     Topology T;
+    int size;
     struct _LinkedListShapes *next;
 }LinkedListShapes;
 
@@ -41,10 +43,10 @@ LinkedListPoints* createPoints(FILE *f)
     float y;
     while((fscanf(f, "%f %f %*[\n]", x, y)) != EOF)
     {
-        sizeOfPoints++;
+       // sizeOfPoints++;
         //create a new node
         list = (LinkedListPoints*)malloc(sizeof(LinkedListPoints));
-        
+        (list->size)++;
         //populate the node
         (list->p).x = x;
         (list->p).y = y;
@@ -52,7 +54,7 @@ LinkedListPoints* createPoints(FILE *f)
         head = p;
         prev = p;
     }
-    
+    return head;
 }
 
 
@@ -76,9 +78,10 @@ LinkedListShapes* createShape(LinkedListPoints* head, int shape)
     int i = 0;
     do
     {
-        i++;
-        sizeOfShapes++;
+       // i++;
+        //sizeOfShapes++;
         list = (LinkedListShapes*)malloc(sizeof(LinkedListShapes));
+        (list->size)++;
         x1 = (list->T).pt1.x = (iterator->p).x;
         y1 = (list->T).pt1.y = (iterator->p).y;
         
@@ -86,7 +89,9 @@ LinkedListShapes* createShape(LinkedListPoints* head, int shape)
         y2 = (list->T).pt2.y = (iterator1->p).y;
         if(shape ==1)
         {
-            (list->T).magnitude = sqrt(pow(x1-x2,2) + pow(y1-y2,2));
+            int val = sqrt(pow(x1-x2,2) + pow(y1-y2,2));
+            (list->T).magnitude = roundf(val *100)/100; // round to the 
+            //2 decimals. 
         }
         if(shape == 2)
         {
@@ -97,7 +102,8 @@ LinkedListShapes* createShape(LinkedListPoints* head, int shape)
         iterator = iterator.next;
         iterator1 = iterator1.next;
     }while(iterator1.next != NULL && i< (sizeOfPoints/2));
-            
+    
+    return head;
 }
 
 int main(int argc, const char*argv[])
@@ -114,15 +120,48 @@ int main(int argc, const char*argv[])
         perror("FOPEN");
         exit(0);
     }
+    
+    LinkedListPoints * LLP = createPoints(file); //this is the head of the 
+    //point file 
+    
     switch(*argv[2])
     {
-        case 'A': partA(file); break;
-        case 'B': partB(file); break;
-        case 'C': partC(file); break;
-        case 'D': partD(file); break;
+        case 'A': partA(LLP); break;
+        case 'B': partB(LLP); break;
+        case 'C': partC(LLP); break;
+        case 'D': partD(LLP); break;
         default: printf("Invalid argument to reverse. Please refer to README for list of options and arguments.");
     }
     return(0);
 }
+
+//parameter is the head of the list of points
+void partA(LinkedListPoints* head)
+{
+    LinkedListShapes* h = createShape(head, 1); // to return the head of 
+    // a new list point
+    
+    LinkedListShapes *iterator = h;
+    int totalLength = 0;
+    int numOfLineSegments = 0;
+    
+    while(iterator != NULL)
+    {
+        numOfLineSegments++;
+        float x1 = (iterator->T).pt1.x;
+        float y1 = (iterator->T).pt1.y;
+        float x2 = (iterator->T).pt2.x;
+        float y2 = (iterator->T).pt2.y;
+        float length = (iterator->T).magnitude;
+        totalLength += length;
+        printf("Segment[%d]: (%f, %f)-->(%f, %f); length = %f", numOfLineSegments, x1, y1, x2, y2, length);
+    }
+    
+    printf("Total tour length = %f\n", totalLength);
+    printf("Total line segments = %d\n", numOfLineSegments);
+}
+
+void partB(
+        
 
 
