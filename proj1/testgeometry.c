@@ -222,7 +222,7 @@ int comp(const void *t1, const void *t2)
 	if (t1.magnitude < t2.magnitude) return -1;
 	return 0;
         */
-}
+
         
 
 
