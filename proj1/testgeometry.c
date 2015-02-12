@@ -43,16 +43,16 @@ LinkedListPoints* createPoints(FILE *f)
     float y;
     while((fscanf(f, "%f %f %*[\n]", x, y)) != EOF)
     {
-       // sizeOfPoints++;
+         sizeOfPoints++;
         //create a new node
         list = (LinkedListPoints*)malloc(sizeof(LinkedListPoints));
         (list->size)++;
         //populate the node
         (list->p).x = x;
         (list->p).y = y;
-        p->next = prev;
-        head = p;
-        prev = p;
+        list->next = prev;
+        head = list;
+        prev = list;
     }
     return head;
 }
@@ -79,7 +79,7 @@ LinkedListShapes* createShape(LinkedListPoints* head, int shape)
     do
     {
        // i++;
-        //sizeOfShapes++;
+        sizeOfShapes++;
         list = (LinkedListShapes*)malloc(sizeof(LinkedListShapes));
         (list->size)++;
         x1 = (list->T).pt1.x = (iterator->p).x;
@@ -136,7 +136,8 @@ int main(int argc, const char*argv[])
 }
 
 //parameter is the head of the list of points
-void partA(LinkedListPoints* head)
+//the return value is used in partC
+LinkedListShapes* partA(LinkedListPoints* head)
 {
     LinkedListShapes* h = createShape(head, 1); // to return the head of 
     // a new list point
@@ -159,9 +160,69 @@ void partA(LinkedListPoints* head)
     
     printf("Total tour length = %f\n", totalLength);
     printf("Total line segments = %d\n", numOfLineSegments);
+    
+    return h;
 }
 
-void partB(
+void partB(LinkedListPoints* head)
+{
+    LinkedListPoints *iterator = head;
+    int numOfPoints = 0;
+    while(iterator!= NULL)
+    {
+        numOfPoints++;
+        iterator = iterator->next;
+    }
+    LinkedListPoints **array = (LinkedListPoints**)malloc(numOfPoints*sizeof(LinkedListPoints**));
+    iterator = head;
+    int i = 0;
+    while(iterator!= NULL)
+    {
+        array[i] = iterator;
+        i++;
+        iterator = iterator->next;
+    }
+    qsort(array,numOfPoints, sizeof(LinkedListPoints*), cmp);
+    
+    //now storing the sorted list in a new linked list of points
+    LinkedListPoints *list, *h, *prev;
+    
+    for(int j = 0; j<i ; j++)
+    {
+        //create a new node
+        list = (LinkedListPoints*)malloc(sizeof(LinkedListPoints));
+        (list->size)++;
+        //populate the node
+        (list->p).x = (array[j]->p).x;
+        (list->p).y = (array[j]->p).y;
+        list->next = prev;
+        h = list;
+        prev = list;
+    }
+    
+    LinkedListShapes* headLines = partA(h); //do the same thing as in partA for
+    //the new sorted list
+}
+
+//in order to sort the points
+int comp(const void *t1, const void *t2)
+{
+    LinkedListPoints *A = *((LinkedListPoints**)t1);
+    LinkedListPoints *B = *((LinkedListPoints**)t2);
+    
+    if((A->p).x > (B->p).x) return 1;
+    if((A->p).x < (B->p).x) return -1;
+    return 0;
+}
+    /*
+	Topology t1 = *((Topology*) t1);
+	Topology t2 = *((Topology*) t2);
+        //should be t1.magnitude since t1 is not a pointer
+	if (t1.magnitude > t2.magnitude) return 1;
+	if (t1.magnitude < t2.magnitude) return -1;
+	return 0;
+        */
+}
         
 
 
