@@ -4,6 +4,7 @@
 // generic typedef to allow for type independent operations, otherwise multiple fns required
 // points are merely topologies with one point and magnitude equal to their x dimension
 // although distance from origin might be more appropriate
+// below is just to store a line segment/rectangle
 typedef struct _Topology 
 {
 	Point pt1;
@@ -18,6 +19,8 @@ typedef struct _Point
 	float y;
 } Point;
 
+//this creates a linked list of points which is used to create a linked
+// list of line segments or rectangles
 typedef struct _LinkedListPoints
 {
     Point p;
@@ -25,6 +28,8 @@ typedef struct _LinkedListPoints
     struct _LinkedListPoints *next;
 }LinkedListPoints;
 
+//this creates a linked list of shape which can either be a line segment or 
+// a rectangle
 typedef struct _LinkedListShapes
 {
     Topology T;
@@ -35,6 +40,8 @@ typedef struct _LinkedListShapes
 int sizeOfPoints = 0; //store the size of linked list of points
 int sizeOfShapes = 0; //store the size of rectangle 
 
+// a function returning the head of the created linked list of points
+// this opens up the file and reads in to store the points
 LinkedListPoints* createPoints(FILE *f)
 {
     LinkedListPoints *head, *list, *prev;
@@ -63,6 +70,7 @@ LinkedListPoints* createPoints(FILE *f)
 // 1 for line, 2 for rectangle
 LinkedListShapes* createShape(LinkedListPoints* head, int shape)
 {
+    //to create the linked list of rectangle or line segments
     LinkedListShapes *head, *list, *prev;
     LinkedListPoints* iterator = head;
     LinkedListPoints* iterator1 = iterator.next;
@@ -101,7 +109,9 @@ LinkedListShapes* createShape(LinkedListPoints* head, int shape)
         }
         iterator = iterator.next;
         iterator1 = iterator1.next;
-    }while(iterator1.next != NULL && i< (sizeOfPoints/2));
+    }while(iterator1.next != NULL);
+    // no need to make it go to sizeOfPoints/2 because if there are three points
+    // they create two line segments
     
     return head;
 }
@@ -166,6 +176,9 @@ LinkedListShapes* partA(LinkedListPoints* head)
 
 void partB(LinkedListPoints* head)
 {
+    //iterates through the linked list of points and then sorts them 
+    // the way it is sorted is that there is an array each of whose 
+    // element is the pointer to an element of the linked list
     LinkedListPoints *iterator = head;
     int numOfPoints = 0;
     while(iterator!= NULL)
@@ -187,6 +200,9 @@ void partB(LinkedListPoints* head)
     //now storing the sorted list in a new linked list of points
     LinkedListPoints *list, *h, *prev;
     
+    //going all the way up to the size of the array 
+    // and in the correct order of elements, storing the linked list 
+    // of points 
     for(int j = 0; j<i ; j++)
     {
         //create a new node
@@ -200,11 +216,15 @@ void partB(LinkedListPoints* head)
         prev = list;
     }
     
+    //now that you have created the linked list of points, 
+    // do the same thing that the partA did
     LinkedListShapes* headLines = partA(h); //do the same thing as in partA for
     //the new sorted list
 }
 
 //in order to sort the points
+// will need a seperate method to sort shapes because in that case we're 
+// comparing magnitude
 int comp(const void *t1, const void *t2)
 {
     LinkedListPoints *A = *((LinkedListPoints**)t1);
