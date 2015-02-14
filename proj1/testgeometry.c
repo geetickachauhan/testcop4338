@@ -203,7 +203,8 @@ void partB(LinkedListPoints* head)
     //going all the way up to the size of the array 
     // and in the correct order of elements, storing the linked list 
     // of points 
-    for(int j = 0; j<i ; j++)
+    int j;
+    for(j = 0; j<i ; j++)
     {
         //create a new node
         list = (LinkedListPoints*)malloc(sizeof(LinkedListPoints));
