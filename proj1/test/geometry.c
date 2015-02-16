@@ -2,22 +2,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+//goal of this function is to iterate only once through file to create list
+//of topology that can then be printed, sorted, etc
+//
 //p_step determines when to make Topology to put in list... imod(p_step);
 //p_step = 0, 1, 2 for points, lines, and rectangles respectively.
+//function pointer is a magnitude function that determines length, area, etc
 void parse_shapes(FILE *f, List *list, float (*mag)(Topology*), int p_step)
 {
 	float x, y;
-	Point prev = {0, 0};
+	Point prev = {0, 0};//prev point encountered
 	Point curr = {0, 0};
-	int point_flag = 0;
+	int point_flag = 0;//if topologies are to be used as points instead
 	if(p_step == 0){point_flag = 1; p_step = 1;}
 	int first = 1;
 	while((fscanf(f, "%f %f %*[\n]", &x, &y)) != EOF)
 	{
 		curr.x = x; curr.y = y;
 		if(first == 1){prev = curr; first++ ; continue;}
-		if(first % p_step == 0)
+		if(first % p_step == 0)//how many lines to skip before building topology
 		{
 		Topology tmp = {prev, curr};
 		tmp.magnitude = mag(&tmp);
@@ -26,7 +29,7 @@ void parse_shapes(FILE *f, List *list, float (*mag)(Topology*), int p_step)
 		prev = curr;
 		first++;
 	}
-	if(point_flag == 1)
+	if(point_flag == 1)//needed to add last element that gets leftout
        	{
 		Topology tmp = {curr, curr}; 
 		tmp.magnitude = mag(&tmp);
