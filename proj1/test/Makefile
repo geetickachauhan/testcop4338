@@ -4,7 +4,7 @@ TARGET = geometry
 CC = gcc
 CFLAGS = -Wall -ggdb 
 #enable warnings and debugging info
-LDFLAGS = 
+LDFLAGS = -lm
 # here we could add dynamically linked libraries like -lrt -lm -lpthread and others
 
 # here we list all source files
