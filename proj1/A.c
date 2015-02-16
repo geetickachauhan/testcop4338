@@ -3,6 +3,7 @@
 /** Interprets list of points as line segments and prints their info
  * list is pre-initialized Struct as an interface for an array of Topology
  * f is the file to be parsed for points
+ */
 void A(List *list, FILE *f)
 {
 	//last arg 1 represents partition step through data set
