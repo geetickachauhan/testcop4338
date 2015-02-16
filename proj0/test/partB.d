@@ -1,0 +1,1 @@
+partB.o: partB.c
