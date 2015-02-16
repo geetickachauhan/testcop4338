@@ -1,1 +1,0 @@
-partA.o: partA.c
