@@ -74,7 +74,7 @@ int comp(const void *t1, const void *t2)
 	Topology t1 = *((Topology*) t1);
 	Topology t2 = *((Topology*) t2);
 	if (t1->magnitude > t2->magnitude) return 1;
-	if (t1->magnitude < t2->magnitude) return -1;
+	if (t1->magnitude < t2->magnitude) return -1; // A -> name NOT EQUAL TO A.name  ... macro for (*A).name.. use A.name instead
 	return 0;
 }
 
