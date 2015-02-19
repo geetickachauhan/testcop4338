@@ -1,0 +1,4 @@
+Contributors: Geeticka Chauhan
+	      Tyler Lozano
+
+Everything works as expected and make -r produces no warnings or errors. The exe file reverse is created and make clean removes all the dependency files. 
