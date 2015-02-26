@@ -42,16 +42,19 @@ int main(int argc, const char *argv[])
 	List list;
 	initialize(&list);
 	// a switch statement to call the function according to the user's choice
-	switch(*argv[2])
+        parse_players(file, &list); //to create the list 
+	switch(*argv[1]) // Geeticka edit: this time option is mentioned as the second command line var 
 	{
 		case 'A':   printf("A");
-                            A(&list, file); break;
+                            // Tyler's code: A(&list, file); break; //Geeticka: let's access the file and create the list in main so that we dont have to pass the file as a parameter
+                            A(&list,*argv[2]); break; // Geeticka's code: Added the *argv[2] because it is the name to be searched for in the list
 		case 'B':   printf("B");
-                            B(&list, file); break;
+                            B(&list, file); break; // might need to make the above changes in here as well
 		case 'C':   printf("C");
-                            C(&list, file); break;
+                            //Tyler's code: C(&list, file); break; //Geeticka: same reason as in A
+                            C(&list); break;
 		case 'D':   printf("D");
-                            D(&list, file); break;
+                            D(&list, file); break; // might need to make the above changes in here as well
 		default: printf("Invalid argument to geometry. Please refer to README for list of options and arguments.\n");
 	}
 
