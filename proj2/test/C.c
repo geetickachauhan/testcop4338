@@ -15,7 +15,7 @@ void C(List *list)
     char *nD, *nO; // name of the best defense and offense player
     for(int i = 0; i< list->filled; i++)
     {
-        Player p = (list->players)[i]; // store the current player just to make code less complicated
+        Player p = get(list, i); // store the current player just to make code less complicated
         float currDefense = (p.RPG *5 + p.SPG *3)/ (p.MPG); //calculate current defense and offense
         float currOffense = (p.PPG + p.APG *2 + (p.RPG)/2)/ (p.MPG);
         if(currDefense > defense)
@@ -31,4 +31,6 @@ void C(List *list)
     }
     printf("The best defense player is %s, with the defense value %f\n", nD, defense);
     printf("The best offense player is %s, with the offense value %f\n", nO,offense);
+    free(nD);
+    free(nO);
 }
