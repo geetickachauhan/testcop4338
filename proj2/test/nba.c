@@ -22,10 +22,7 @@ void parse_players(FILE *f, List *list)
 
 int main(int argc, const char *argv[])
 {
-    /* instantiates file pointer and conducts input validation
-     * on filename argv[1] that user provides, exits program
-     * with error message if fopen fails
-     */
+    	// instantiates file pointer and exits program with error message if fopen fails
 	FILE *file;
 	if((file = fopen(file_name, "r")) == NULL)
 	{
