@@ -30,6 +30,7 @@ void C(List *list)
     }
     printf("\nThe best defense player is %s, with the defense value %f\n", nD, defense);
     printf("The best offense player is %s, with the offense value %f\n\n", nO,offense);
-    free(nD);
-    free(nO);
+   // you didn't allocate these variables with malloc, so free() not necessary
+   // free(nD);
+   // free(nO);
 }
