@@ -33,31 +33,29 @@ int main(int argc, const char *argv[])
 		perror("FOPEN");
 		exit(0);
 	}
-	printf("opening file...");
 	
 	List list;
 	initialize(&list);
 	parse_players(file, &list); //to create the list 
-	B(&list, argv[1]);
         
- //		// a switch statement to call the function according to the user's choice
- //switch(*argv[1]) // *argv[1] is function a, b, c, or d
- //{
- //	// argv[2] is option to be passed to function, if the function takes an option
+ 		// a switch statement to call the function according to the user's choice
+ switch(*argv[1]) // *argv[1] is function a, b, c, or d
+ {
+ 	// argv[2] is option to be passed to function, if the function takes an option
  //	case 'A':   if(argc != 3) {printf("nba A needs 3 arguments, you passed %d", argc); exit(0);}
  //		    printf("A");
  //		    A(&list, argv[2]); break; // pass pointer to argument and dereference in function
- //	case 'B':   if(argc != 3) {printf("nba B needs 3 arguments, you passed %d", argc); exit(0);}
- //		    printf("B");
- //		    B(&list, argv[2]); break; 
- //	case 'C':   if(argc != 2) {printf("nba C needs 2 arguments, you passed %d", argc); exit(0);}
- //		    printf("C");
- //		    C(&list); break;
- //	case 'D':   if(argc != 2) {printf("nba D needs 2 arguments, you passed %d", argc); exit(0);}
- //		    printf("D");
- //		    D(&list); break; 
- //	default: printf("Invalid argument to nba. Please refer to README for list of options and arguments.\n");
- //}
+ 	case 'B':   if(argc != 3) {printf("nba B needs 3 arguments, you passed %d", argc); exit(0);}
+ 		    printf("B");
+ 		    B(&list, argv[2]); break; 
+ 	case 'C':   if(argc != 2) {printf("nba C needs 2 arguments, you passed %d", argc); exit(0);}
+ 		    printf("C");
+ 		    C(&list); break;
+ 	case 'D':   if(argc != 2) {printf("nba D needs 2 arguments, you passed %d", argc); exit(0);}
+ 		    printf("D");
+ 		    D(&list); break; 
+ 	default: printf("Invalid argument to nba. Please refer to README for list of options and arguments.\n");
+ }
 
 
 	free_list(&list);

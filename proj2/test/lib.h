@@ -25,3 +25,7 @@ void grow_list(List *list);
 void free_list(List *list);
 
 void B(List * list, char * choice);
+
+void C(List * list);
+
+void D(List * list);
