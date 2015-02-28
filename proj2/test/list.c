@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
-	int filled; //how filled it is
-	int capacity; //total available slots
-	Player *players; //array of Player
-} List;
+//typedef struct {
+//	int filled; //how filled it is
+//	int capacity; //total available slots
+//	Player *players; //array of Player
+//} List;
 
 /** initializes Struct elements and allocates memory for array
  * according to initial capacity constraint, can be changed if necessary
@@ -63,7 +63,12 @@ void free_list(List *list)
  *
  * takes format strings for body of information and end declaration
  */
-void print_list(List *list, const char *format_string, const char *end_string)
+void print_list(List *list, const char *format_string)
 {
-	//incase we need it
+	int i;
+	Player p;
+	for (i = 0; i < (list->filled); i++)
+       	{
+		p = get(list, i);
+		printf(format_string, p.id, p.name, p.PPG, p.APG, p.RPG, p.SPG, p.MPG, p.vote1, p.vote2, p.vote3); }
 }

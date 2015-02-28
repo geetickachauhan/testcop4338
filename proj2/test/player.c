@@ -2,10 +2,11 @@
 #include <math.h>
 
 typedef struct {
-	char* name;
+	char* pname;
 	int id, vote1, vote2, vote3;
 	float PPG, APG, RPG, SPG, MPG;
 } Player;
+
 
 // compares two players by their magnitude
 // this function is to be passed to qsort
