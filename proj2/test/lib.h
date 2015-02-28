@@ -23,3 +23,5 @@ void set(List *list, int index, Player t);
 void grow_list(List *list);
 
 void free_list(List *list);
+
+void B(List * list, char * choice);
