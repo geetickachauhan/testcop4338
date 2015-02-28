@@ -95,25 +95,25 @@ void B(List* list,  char* choice)
 	//qsort(list->players, list->filled, sizeof(Player), PPG); 
 	if (strcmp("PPG", choice) == 0)
 	{
-	qsort_r(list->players, list->filled, sizeof(Player), PPG); 
+	qsort(list->players, list->filled, sizeof(Player), PPG); 
 	print_PPG(list);
 	}
 
 	else if (strcmp("APG", choice) == 0)
 	{
-	qsort_r(list->players, list->filled, sizeof(Player), APG); 
+	qsort(list->players, list->filled, sizeof(Player), APG); 
 	print_APG(list);
 	}
 
 	else if (strcmp("RPG", choice) == 0)
 	{
-	qsort_r(list->players, list->filled, sizeof(Player), RPG); 
+	qsort(list->players, list->filled, sizeof(Player), RPG); 
 	print_RPG(list);
 	}
 
 	else if (strcmp("SPG", choice) == 0)
 	{
-	qsort_r(list->players, list->filled, sizeof(Player), SPG); 
+	qsort(list->players, list->filled, sizeof(Player), SPG); 
 	print_SPG(list);
 	}
 
