@@ -1,6 +1,7 @@
 #include <search.h>
 #include "lib.h"
 #include <stdlib.h>
+#include <stdio.h>
 void addvote(int vote, int *max, int *maxd, int points)
 {
 	char str[15];
