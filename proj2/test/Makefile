@@ -1,6 +1,6 @@
 # Disable implict rules with "make -r"
 
-TARGET = geometry
+TARGET = nba
 CC = gcc
 CFLAGS = -Wall -ggdb 
 #enable warnings and debugging info
@@ -8,7 +8,7 @@ LDFLAGS = -lm
 # here we could add dynamically linked libraries like -lrt -lm -lpthread and others
 
 # here we list all source files
-SRC = geometry.c list.c topology.c A.c B.c C.c D.c 
+SRC = nba.c list.c A.c B.c C.c D.c  
 OBJS = $(SRC:.c=.o)
 DEPS = $(OBJS:.o=.d)
 DSYM = $(OBJS:.o=.dSYM)

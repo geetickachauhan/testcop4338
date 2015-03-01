@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include "lib.h"
 
 /*
@@ -10,13 +11,14 @@ way to the end of the list
 void A(List *list, char *n)
 {
     int num = 0; // number of players with the same name
-    char *s = malloc(300); //initially giving it 300 bytes
-    if(s == null)
+    char *s = malloc(300 * sizeof(char)); //initially giving it 300 bytes
+    if(s == NULL)
     {
         perror("Malloc failed");
         exit(0);
     }
-    for(int i = 0; i<list->filled; i++)
+    int i;
+    for(i = 0; i<list->filled; i++)
     {
         Player p = get(list, i);
         if(strcmp(p.name, n) == 0)
@@ -25,10 +27,10 @@ void A(List *list, char *n)
             // if I say %s
             if(num>1)
             {
-                int *temp = realloc(s, num*300); //reallocating more than 2 times the previous memory to store what is coming afterward
-                free(s); //technically we should be freeing the memory that was stored in s 
+                int *temp = realloc(s, num*300 * sizeof(char)); //reallocating more than 2 times the previous memory to store what is coming afterward
+               // free(s); //technically we should be freeing the memory that was stored in s 
                 // realloc gets more memory and then copties the contents of 
-                if(temp != null)
+                if(temp != NULL)
                     s = temp;
             }
             num++;
@@ -47,7 +49,7 @@ void A(List *list, char *n)
     // traversed the whole list. That is why I had to include this at the end
     // suggestions? do you think he cares if we have the following in the beginning
     // or the end?
-    printf("There are %d player (s) with the name %s\n", num, n);
+    printf("\nThere are %d player (s) with the name %s\n", num, n);
     printf("%s", s);
     free(s);
 }

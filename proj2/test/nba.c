@@ -42,9 +42,9 @@ int main(int argc, const char *argv[])
  switch(*argv[1]) // *argv[1] is function a, b, c, or d
  {
  	// argv[2] is option to be passed to function, if the function takes an option
- //	case 'A':   if(argc != 3) {printf("nba A needs 3 arguments, you passed %d", argc); exit(0);}
- //		    printf("A");
- //		    A(&list, argv[2]); break; // pass pointer to argument and dereference in function
+ 	case 'A':   if(argc != 3) {printf("nba A needs 3 arguments, you passed %d", argc); exit(0);}
+ 		    printf("A");
+ 		    A(&list, argv[2]); break; // pass pointer to argument and dereference in function
  	case 'B':   if(argc != 3) {printf("nba B needs 3 arguments, you passed %d", argc); exit(0);}
  		    printf("B");
  		    B(&list, argv[2]); break; 
