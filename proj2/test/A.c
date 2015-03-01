@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include "lib.h"
 
 /*
@@ -8,7 +9,7 @@ statistics about the player by name.
 Duplicate names might be present so that is why I'm going all the 
 way to the end of the list
 */
-void A(List *list, char *n)
+void A(List *list, const char *n)
 {
     int num = 0; // number of players with the same name
     char *s = malloc(300 * sizeof(char)); //initially giving it 300 bytes
@@ -27,7 +28,7 @@ void A(List *list, char *n)
             // if I say %s
             if(num>1)
             {
-                int *temp = realloc(s, num*300 * sizeof(char)); //reallocating more than 2 times the previous memory to store what is coming afterward
+                char *temp = realloc(s, num*300 * sizeof(char)); //reallocating more than 2 times the previous memory to store what is coming afterward
                // free(s); //technically we should be freeing the memory that was stored in s 
                 // realloc gets more memory and then copties the contents of 
                 if(temp != NULL)

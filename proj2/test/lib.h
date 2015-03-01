@@ -24,7 +24,9 @@ void grow_list(List *list);
 
 void free_list(List *list);
 
-void B(List * list, char * choice);
+void A(List *list, const char *n);
+
+void B(List * list, const char * choice);
 
 void C(List * list);
 

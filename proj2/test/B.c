@@ -89,7 +89,7 @@ void print_SPG(List *list)
 	}
 }
 
-void B(List* list,  char* choice)
+void B(List* list,  const char* choice)
 {
 
 	//qsort(list->players, list->filled, sizeof(Player), PPG); 
@@ -117,6 +117,6 @@ void B(List* list,  char* choice)
 	print_SPG(list);
 	}
 
-	else printf("%s not a valid option", choice);
+	else printf("\n%s not a valid option", choice);
 }
 
