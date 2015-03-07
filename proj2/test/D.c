@@ -2,7 +2,7 @@
 #include "lib.h"
 #include <stdlib.h>
 #include <stdio.h>
-void addvote(int vote, int *max, int *maxd, int points)
+void addvote(int vote, int *max, int *maxd, long points)
 {
 	char str[15];
 	sprintf(str, "%d", vote);
@@ -12,17 +12,17 @@ void addvote(int vote, int *max, int *maxd, int points)
 	id = hsearch(tmp, FIND);
 	if( id == NULL)
 	{
-		tmp.data =  (void *) points;
+		tmp.data = (void *)  points;
 		hsearch(tmp, ENTER);
 	}
 
 	else
 	{
 		(id->data) += points;
-		if((int)(id -> data) > *maxd)
+		if((long)(id -> data) > *maxd)
 		{
 			*max = (int) strtol((id->key), (char **)NULL, 10);
-			*maxd = (int )(id->data);
+			*maxd = (long)(id->data);
 		}
 	}
 }
