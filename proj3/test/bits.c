@@ -9,12 +9,15 @@
 
 int getset_freeBit(char *c) {
   
+  //accepts a character array which basically contains 8 characters to store 
+  //the different bits
   int bi;
 
+  // bit index actually returns the index within the character array 
   for(bi=0; bi<sizeof(char)*8; bi++) {
     
     if(getbit(*c,bi)==0) {
-      setbit(c,bi); 
+      setbit(c,bi); // set bit to 1
       return bi;
     }
     

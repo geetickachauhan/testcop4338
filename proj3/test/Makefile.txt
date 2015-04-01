@@ -1,6 +1,6 @@
 # Disable implict rules with "make -r"
 
-TARGET = memory threads
+TARGET = memory 
 CC = gcc
 CFLAGS = -Wall -ggdb #enable warnings and debugging info
 LDFLAGS = # here we could add dynamically linked libraries like -lrt -lm -lpthread and others
@@ -23,12 +23,13 @@ clean:
 memory: memory.o bits.o
 	$(CC) $^ $(LDFLAGS) -o $@
 
-%: %.o
-	$(CC) $^ $(LDFLAGS) -o $@
+%: %.o lib%.so
+	$(CC) $^ $(LDFLAGS) -shared -o $@
+
 
 # the -MMD flags creates dependency files for every object, so 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -MMD $<  
+	$(CC) $(CFLAGS) -c -fpic -MMD $<  
 
 
 # here make reads the dependency files and handle them.

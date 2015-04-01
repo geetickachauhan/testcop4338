@@ -25,33 +25,38 @@ void * allocate_region(unsigned int size) {
     exit(0);
   }
 
-  Region * tmp = M.R;
+  Region * tmp = M.R; // end of the region pointer
 
-  M.R = (Region *)mapped_addr;
-  M.R->addr = mapped_addr + sizeof(Region);
-  M.R->size = size;
-  M.R->next = tmp;
+  M.R = (Region *)mapped_addr; // make the memory's region pointer point to the new end
+  M.R->addr = mapped_addr + sizeof(Region); // the addr points to the actual chunk of memory because region struct was stored in the beginning in the data
+  M.R->size = size; // size of the chunk of memory as stored in region pointer is the same as size of chunk of memory 
+  M.R->next = tmp; // make the next of new region point to old one
   
-  return M.R->addr;
+  return M.R->addr; // return allocated address
 
 }
 
 
-  // do this next time
+  // do this next time; get a free slot within a slab (each element in cache array contains a pointer to a slab
 int getset_freeSlot(Slab *S, int max_slots) {
 
   // compute a conservative bm_size
-  int bm_size = max_slots/8 + 1; 
+  int bm_size = max_slots/8 + 1; // size of bitmap in bytes
 
   int i;
-  int bi, si = -1;
+  int bi, si = -1; // bit index and slot index
 
-  for(i=0; i< bm_size; i++) {
-    if((bi=getset_freeBit(S->bitmap+i))!=-1) {
+  // bitmap is defined by the size in bytes (because it is basically 
+  // divided as a series of 8 character arrays)
+  // getsetfreeBit accepts a character array containing 8 characters
+  for(i=0; i< bm_size; i++) 
+  {
+    if((bi=getset_freeBit(S->bitmap+i))!=-1) 
+    {
       // make sure that value returned
       // is smaller than max_slots
-      si = i*8+bi;
-      if(si>=max_slots) si = -1;
+      si = i*8+bi; // slot index is bit map size (set of char arrays of size 8) times 8 plus the actual bid index within each array
+      if(si>=max_slots) si = -1; // but if slot index exceeds max slots its a problem
       break;
     }
   }
@@ -71,6 +76,7 @@ void * allocate_cache(unsigned int size) {
   int ci = 0;
 
   while(size > M.C[ci].slot_size) ci++;
+  // as soon as you find a cache array that is just greater than the memory 
   
   int slot_size = M.C[ci].slot_size;
 
@@ -79,17 +85,21 @@ void * allocate_cache(unsigned int size) {
 
   // iterate through the slabs finding one with an 
   // empty slot
-  Slab *head = M.C[ci].S;
-  Slab *iterator = head;
+  // getting to a specific cache element which contains pointers to slabs
+  Slab *head = M.C[ci].S; // current slab head
+  Slab *iterator = head; 
   Slab *prev = head;
   Slab *slab;
 
   while(iterator != NULL) {
     if(iterator->used!=M.C[ci].max_slots) break;
+    // if the number of used slots is not equal to max slots then there 
+    // must be a free slot in that particular slab
     prev = iterator;
     iterator = iterator->next;
   } 
   
+  // no free slot slab found; so create a new
   if(iterator==NULL) {
 
     printf("Could not find a slab with a free slot ... Creating a new one!\n");
@@ -163,8 +173,8 @@ void *allocate(unsigned int size) {
 
 int deallocate_region(void *addr) {
 
-  Region *iterator = M.R;
-  Region *prev = M.R;
+  Region *iterator = M.R; // start from latest memory allocation
+  Region *prev = M.R; // the one before latest 
 
   while(iterator!=NULL) {
 
@@ -175,18 +185,21 @@ int deallocate_region(void *addr) {
     
       printf("Found region allocation of size = %d\n", iterator->size);
 
-      if(iterator==M.R) {      
-	// head of the region list matched
+      if(iterator==M.R) 
+      {      
+	// head of the region list matched; special case; remove head
 	M.R = M.R->next;
-      } else {
+      }
+      else 
+      {
 	prev->next = iterator->next;	
       }
  
-      munmap(iterator, iterator->size + sizeof(Region));
-      return 0;
+      munmap(iterator, iterator->size + sizeof(Region)); // unmap whatever is pointed to by iterator
+      return 0; // deallocation was possible
     }
 
-    prev = iterator;
+    prev = iterator; 
     iterator = iterator->next;    
   }
 
