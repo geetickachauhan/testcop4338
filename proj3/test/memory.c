@@ -66,6 +66,8 @@ int getset_freeSlot(Slab *S, int max_slots) {
 }
 
 
+//head points to oldest allocation and last element is the newest allocation
+// in case a free slot could not be found
 // allocate for sizes <= 1024
 void * allocate_cache(unsigned int size) {
 
@@ -117,7 +119,7 @@ void * allocate_cache(unsigned int size) {
     }
 
     // initialize mapped page (including bitmap) to zero
-    bzero(mapped_addr, PAGE_SIZE);
+    bzero(mapped_addr, PAGE_SIZE); 
 
     if(head == NULL) {
       M.C[ci].S = (Slab *)mapped_addr;
@@ -128,12 +130,13 @@ void * allocate_cache(unsigned int size) {
     }
 
     slab->next = NULL;
-    slab->bitmap = (char *) (mapped_addr + sizeof(Slab)); 
-    slab->addr = (void *) (slab->bitmap + M.C[ci].bm_size);
+    slab->bitmap = (char *) (mapped_addr + sizeof(Slab)); // cause after the slab stored struct stored in the slab memory, there is bitmap address 
+    slab->addr = (void *) (slab->bitmap + M.C[ci].bm_size); // this is after the bitmap address 
        
   } else {
     slab = iterator;
   }
+  //slab is basically pointer to the slab where we're going to store data 
     
   // 3. Find a free slot
   // create a placeholder for the slot index within the 
@@ -144,7 +147,7 @@ void * allocate_cache(unsigned int size) {
 
   // 4. Update the bitmap for the specific slot
 
-  si = getset_freeSlot(slab, M.C[ci].max_slots);
+  si = getset_freeSlot(slab, M.C[ci].max_slots); // find a free slot using bitmap and set it to 1 in bitmap
   
   // update number of used slots
   slab->used++;
@@ -210,12 +213,16 @@ int deallocate_region(void *addr) {
 }
 
 
+//Geeticka
 int deallocate_cache(void *addr) {
 
   // Homework!
   
   // Steps:
 
+  int ci = 0;
+
+  while(size > M.C[ci].slot_size) ci++;
   // 1. Find the cache
   // How?
   // Iterate through each cache
@@ -224,14 +231,93 @@ int deallocate_cache(void *addr) {
   // if so, you have found the cache
   // if not,
   goto OUT;
-
-
+  
+  Slab * iteratorSlab;
+  for(ci = 0; ci< NUM_CACHES; ci++)
+  {
+    iteratorSlab = M.C[ci].S; // remember within each slab is the bitmap and slab struct
+    while(iteratorSlab != NULL)
+    {
+        int start_addr = iteratorSlab->addr;
+        int end_addr = iteratorSlab->addr + M.C[ci].max_slots * M.C[ci].slot_size; // basically the start slot address to the total slots times the size of each slot
+        if(addr >= start_addr && addr <= end_addr)
+            break; // found the cache and the slab as well
+        iteratorSlab = iteratorSlab->next;
+    }
+  }
+  
+  if(ci >= NUM_CACHES) // the cache went all the way without finding correct slab or cache
+  {
+      return -1; // no cache found to deallocate
+  }
+  
   // 2. Find the slot
   // How?
   // Check Is it a valid slot addr?
   // If not, goto OUT
   // If yes, go to next step
 
+    //iteratorSlab is the slab where the addresses can lie
+    
+    
+  void * addrIterator = iteratorSlab->addr; // address where the slots begin
+  while(addrIterator <= iteratorSlab->addr + M.C[ci].slot_size * (M.C[ci].max_slots -1)) // while loop should only go up to 1 less max slot because the address can not be valid if it reaches all the way at the end of the slab
+  {
+      if(addrIterator == addr)
+        break;
+      addrIterator += M.C[ci].slot_size;
+  }
+  
+  if(addrIterator >= iteratorSlab->addr + M.C[ci].slot_size * M.C[ci].max_slots)
+  {
+      return -1; // in this case it was not a valid address 
+  }
+  
+    
+  // Geeticka: check this out later
+  int bm_size = max_slots/8 + 1; // size of bitmap in bytes
+
+  int i;
+  int bi, si = -1; // bit index and slot index
+
+  // bitmap is defined by the size in bytes (because it is basically 
+  // divided as a series of 8 character arrays)
+  // getsetfreeBit accepts a character array containing 8 characters
+  for(i=0; i< bm_size; i++) 
+  {
+      bi=S->bitmap+i; // bit index, go through the bitmap
+      si = i*8+bi; // slot index is bit map size (set of char arrays of size 8) times 8 plus the actual bid index within each array
+      if(si>=max_slots) si = -1; // but if slot index exceeds max slots its a problem
+      break;
+    }
+  }
+    
+    //Geeticka: work from here
+    
+  // iterate through the slabs finding one with an 
+  // empty slot
+  // getting to a specific cache element which contains pointers to slabs
+  Slab *head = iteratorSlab; // current slab that we need to deallocate from 
+  Slab *iterator = iteratorSlab; 
+  Slab *prev = iteratorSlab;
+  Slab *slab;
+
+  while(iterator != NULL) {
+    if(iterator->used!=M.C[ci].max_slots) break;
+    // if the number of used slots is not equal to max slots then there 
+    // must be a free slot in that particular slab
+    prev = iterator;
+    iterator = iterator->next;
+  } 
+  
+  // no free slot slab found; so create a new
+  if(iterator==NULL) {
+  
+  
+  
+  
+  
+  
   
   // 3. Check bit corresponding to
   // above slot in bitmap
