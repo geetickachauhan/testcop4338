@@ -232,9 +232,11 @@ int deallocate_cache(void *addr) {
   // if not,
   goto OUT;
   
+  Slab * prevSlab;
   Slab * iteratorSlab;
   for(ci = 0; ci< NUM_CACHES; ci++)
   {
+    prevSlab = M.C[ci].S;
     iteratorSlab = M.C[ci].S; // remember within each slab is the bitmap and slab struct
     while(iteratorSlab != NULL)
     {
@@ -242,6 +244,7 @@ int deallocate_cache(void *addr) {
         int end_addr = iteratorSlab->addr + M.C[ci].max_slots * M.C[ci].slot_size; // basically the start slot address to the total slots times the size of each slot
         if(addr >= start_addr && addr <= end_addr)
             break; // found the cache and the slab as well
+        prevSlab = iteratorSlab;
         iteratorSlab = iteratorSlab->next;
     }
   }
@@ -273,7 +276,9 @@ int deallocate_cache(void *addr) {
       return -1; // in this case it was not a valid address 
   }
   
+  //iteratorSlab is the correct slab 
     
+      /*  
   // Geeticka: check this out later
   int bm_size = max_slots/8 + 1; // size of bitmap in bytes
 
@@ -313,25 +318,62 @@ int deallocate_cache(void *addr) {
   // no free slot slab found; so create a new
   if(iterator==NULL) {
   
+  */
   
   
   
-  
-  
+  // fix step 2 and 3 where you just find the slot in step 2 and then work with step 3
   
   // 3. Check bit corresponding to
   // above slot in bitmap
   // IF bit is zero, then goto OUT
+  
+  int bm_size = max_slots/8 + 1; // size of bitmap in bytes
 
+  int i;
+  int j; // index for each slot within the bitmap
+  int bi, si = -1; // bit index and slot index
+  addrIterator = iteratorSlab->addr;
+  int bitIndex; // index of the bit within each character array in the bitmap
+  char *c; // pointer to the bitmap index character array and a position
+
+  // bitmap is defined by the size in bytes (because it is basically 
+  // divided as a series of 8 character arrays)
+  // getsetfreeBit accepts a character array containing 8 characters
+  for(i=0; i< bm_size; i++) 
+  {
+      bi=S->bitmap+i; // bit index, go through the bitmap
+      // each bitmap index is a pointer to a character array of size 8
+      for(j = 0; j< sizeof(char)*8; j++)
+      {
+            if(addrIterator == addr)
+            {
+               if(getbit(S->bitmap+i,j)== 0)
+                    return -1;
+               else if(getbit(S->bitmap+i, j)==1)
+                    break;  // get out of the looop as soon as you've found your slot
+            }
+            addrIterator += M.C[ci].slot_size;
+      }
+      si = i*8+bi; // slot index is bit map size (set of char arrays of size 8) times 8 plus the actual bid index within each array
+    
+      if(si>=max_slots) si = -1; // but if slot index exceeds max slots its a problem; this problem should not arise here
+    }
+  }
 
   // 4. We have found a valid bit
   // Reset/clear the bit
+  resetbit(S->bitmap+i, j);
 
   // 5. Decrease slots used
+  M.C[ci].S.used--;
 
   // 6. If (slots_used == 0)
   // Remove slab from list of slabs
   // And unmap slab using slab starting address
+  if(iteratorSlab.used == 0)
+  {
+      prevSlab->next = iteratorSlab->next; // include special case where you remove the head
 
   // 7. return 0
 

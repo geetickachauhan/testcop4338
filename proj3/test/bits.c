@@ -28,6 +28,7 @@ int getset_freeBit(char *c) {
 
 }
 
+
 void printbitsJean(char c) {
 
   int i;
@@ -88,7 +89,7 @@ void setbit(char *c, int pos) {
 
 }
 
-
+//make the bit a 0
 void resetbit(char *c, int pos) {
 
   assert(pos<8);
