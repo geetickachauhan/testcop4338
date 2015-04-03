@@ -261,8 +261,23 @@ int deallocate_cache(void *addr) {
   // If yes, go to next step
 
     //iteratorSlab is the slab where the addresses can lie
-    
-    
+
+  int slotIndex = 0;
+  void * addrIterator = iteratorSlab->addr; // address where the slots begin
+  while(addrIterator <= iteratorSlab->addr + M.C[ci].slot_size * (M.C[ci].max_slots -1)) // while loop should only go up to 1 less max slot because the address can not be valid if it reaches all the way at the end of the slab
+  {
+      if(addrIterator == addr)
+        break;
+      slotIndex++;
+      addrIterator += M.C[ci].slot_size;
+  }
+  
+  if(addrIterator >= iteratorSlab->addr + M.C[ci].slot_size * M.C[ci].max_slots)
+  {
+      return -1; // in this case it was not a valid address 
+  }
+
+  /*  
   void * addrIterator = iteratorSlab->addr; // address where the slots begin
   while(addrIterator <= iteratorSlab->addr + M.C[ci].slot_size * (M.C[ci].max_slots -1)) // while loop should only go up to 1 less max slot because the address can not be valid if it reaches all the way at the end of the slab
   {
@@ -275,51 +290,9 @@ int deallocate_cache(void *addr) {
   {
       return -1; // in this case it was not a valid address 
   }
-  
-  //iteratorSlab is the correct slab 
-    
-      /*  
-  // Geeticka: check this out later
-  int bm_size = max_slots/8 + 1; // size of bitmap in bytes
-
-  int i;
-  int bi, si = -1; // bit index and slot index
-
-  // bitmap is defined by the size in bytes (because it is basically 
-  // divided as a series of 8 character arrays)
-  // getsetfreeBit accepts a character array containing 8 characters
-  for(i=0; i< bm_size; i++) 
-  {
-      bi=S->bitmap+i; // bit index, go through the bitmap
-      si = i*8+bi; // slot index is bit map size (set of char arrays of size 8) times 8 plus the actual bid index within each array
-      if(si>=max_slots) si = -1; // but if slot index exceeds max slots its a problem
-      break;
-    }
-  }
-    
-    //Geeticka: work from here
-    
-  // iterate through the slabs finding one with an 
-  // empty slot
-  // getting to a specific cache element which contains pointers to slabs
-  Slab *head = iteratorSlab; // current slab that we need to deallocate from 
-  Slab *iterator = iteratorSlab; 
-  Slab *prev = iteratorSlab;
-  Slab *slab;
-
-  while(iterator != NULL) {
-    if(iterator->used!=M.C[ci].max_slots) break;
-    // if the number of used slots is not equal to max slots then there 
-    // must be a free slot in that particular slab
-    prev = iterator;
-    iterator = iterator->next;
-  } 
-  
-  // no free slot slab found; so create a new
-  if(iterator==NULL) {
-  
   */
   
+  //iteratorSlab is the correct slab 
   
   
   // fix step 2 and 3 where you just find the slot in step 2 and then work with step 3
@@ -328,6 +301,14 @@ int deallocate_cache(void *addr) {
   // above slot in bitmap
   // IF bit is zero, then goto OUT
   
+  
+  int bitIndex = slotIndex/8; 
+  // the specific bit position is determined by slotIndex%8 
+  int pos = slotIndex%8;
+  if(getbit(S->bitmap+bitIndex, pos) == 0)
+    return -1;
+  
+  /*
   int bm_size = max_slots/8 + 1; // size of bitmap in bytes
 
   int i;
@@ -360,10 +341,13 @@ int deallocate_cache(void *addr) {
       if(si>=max_slots) si = -1; // but if slot index exceeds max slots its a problem; this problem should not arise here
     }
   }
+  */
 
   // 4. We have found a valid bit
   // Reset/clear the bit
-  resetbit(S->bitmap+i, j);
+  resetbit(S->bitmap+bitIndex, pos);
+  //resetbit(S->bitmap+i, j);
+  
 
   // 5. Decrease slots used
   M.C[ci].S.used--;
@@ -373,12 +357,20 @@ int deallocate_cache(void *addr) {
   // And unmap slab using slab starting address
   if(iteratorSlab.used == 0)
   {
-      prevSlab->next = iteratorSlab->next; // include special case where you remove the head
+      if(iterator == M.C[ci].S)
+      {
+          M.C[ci].S = M.C[ci].S->next;
+      }
+      else
+      {
+          prevSlab->next = iteratorSlab->next; // include special case where you remove the head
+      }
+   }
+   
+   munmap(iteratorSlab, PAGE_SIZE);
 
   // 7. return 0
-
- OUT: 
-  return -1;
+  return 0;
 
 }
 
@@ -428,15 +420,34 @@ void init_mallocator() {
 void finalize_mallocator() {
 
   // Homework!
+  Region *iteratorRegion = M.R;
+  int i; // to iterate through cache
+  Slab *s; // to iterate through slab
 
   // Steps:
 
   // 1. Iterate through region list 
   //    unmap each region
+  while(iteratorRegion != NULL)
+  {
+      M.R = M.R->next;
+      unmap(iteratorRegion, iteratorRegion->size + sizeof(Region));
+      iteratorRegion = iteratorRegion->next;
+  }
 
   // 2. Iterate through each cache
   //      Iterate through each slab
   //         Unmap each slab
+  for(i = 0; i<NUM_CACHES; i++)
+  {
+      s = M.C[i].S;
+      while(s != null)
+      {
+          M.C[i].S = M.C[i].S->next;
+          unmap(s, PAGE_SIZE);
+          s = s->next;
+      }
+  }
  
 }
 
