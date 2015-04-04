@@ -257,6 +257,7 @@ int deallocate_cache(void *addr) {
   
   if(found==0) // the cache went all the way without finding correct slab or cache
   {
+      printf("Unable to Find cache to deallocate at addr = %p\n", addr);
       return -1; // no cache found to deallocate
   }
   
@@ -280,6 +281,7 @@ int deallocate_cache(void *addr) {
   
   if(addrIterator >= iteratorSlab->addr + M.C[ci].slot_size * M.C[ci].max_slots)
   {
+      printf("Unable to Find valid address in the slab to deallocate at addr = %p\n", addr);
       return -1; // in this case it was not a valid address 
   }
 
@@ -312,7 +314,10 @@ int deallocate_cache(void *addr) {
   // the specific bit position is determined by slotIndex%8 
   int pos = slotIndex%8;
   if(getbit(*(iteratorSlab->bitmap+bitIndex), pos) == 0)
+  {
+    printf("Slot had already been deallocated at addr = %p\n", addr);
     return -1;
+   }
   
   /*
   int bm_size = max_slots/8 + 1; // size of bitmap in bytes
@@ -376,6 +381,8 @@ int deallocate_cache(void *addr) {
    
    
   // 7. return 0
+  
+    printf("Deallocation successful from cache at addr = %p\n", addr);
   return 0;
 
 }
@@ -400,7 +407,8 @@ void deallocate(void * addr) {
 
 void init_mallocator() {
 
-  fd = open("../dev/zero", O_RDWR);
+  //fd = open("../dev/zero", O_RDWR);
+  fd = open("text1.txt", O_RDWR);
 
   if(fd<0) {
     perror("opening the ZEROES file failed!");
@@ -505,11 +513,14 @@ void test_slab_allocator() {
 
 
   printf("Allocated 19 bytes at %p\n",p1);
+  deallocate(p1);
 
   for(i =0; i<1000; i++) {
 
     p1 = allocate(23);
     printf("Allocated 23 bytes at %p\n",p1);
+    
+   deallocate(p1);
 
   }
 
@@ -517,6 +528,8 @@ void test_slab_allocator() {
 
     p1 = allocate(231);
     printf("Allocated 231 bytes at %p\n",p1);
+    
+   deallocate(p1);
 
   }
 
@@ -524,8 +537,11 @@ void test_slab_allocator() {
 
     p1 = allocate(1024);
     printf("Allocated 1024 bytes at %p\n",p1);
+    
+   deallocate(p1);
 
   }
+  
 
   return;
 
