@@ -2,12 +2,13 @@
 
 TARGET = main 
 CC = gcc
-CFLAGS = -fpic -Wall -ggdb #enable warnings and debugging info
+CFLAGS = -m32 -fpic -Wall -ggdb #enable warnings and debugging info
 LDPATH = . 
+SHFLAGS = -m32 -shared
 LDFLAGS = -lmemory # here we could add dynamically linked libraries like -lrt -lm -lpthread and others
 
 # here we list all source files
-SRC = memory.c bits.c 
+SRC = memory.c bits.c threads.c
 OBJS = $(SRC:.c=.o)
 DEPS = $(OBJS:.o=.d)
 DSYM = $(OBJS:.o=.dSYM)
@@ -22,10 +23,10 @@ clean:
 	rm -rf $(DSYM)
 
 main: main.c libmemory.so
-	$(CC) -o $@ $< $(LDFLAGS) -L$(LDPATH)
+	$(CC) -m32 -o $@ $< $(LDFLAGS) -L$(LDPATH)
 
 libmemory.so: memory.o bits.o
-	$(CC) -shared -o $@ $^
+	$(CC) $(SHFLAGS) -o $@ $^
 
 %: %.o
 	$(CC) $^ $(LDFLAGS) -o $@

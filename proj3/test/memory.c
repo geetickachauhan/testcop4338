@@ -400,7 +400,7 @@ void deallocate(void * addr) {
 
 void init_mallocator() {
 
-  fd = open("../ZEROES", O_RDWR);
+  fd = open("../dev/zero", O_RDWR);
 
   if(fd<0) {
     perror("opening the ZEROES file failed!");
