@@ -18,7 +18,7 @@ all: $(TARGET)
 
 # let's clean up the mess
 clean:
-	rm -f $(TARGET) $(OBJS) $(DEPS); 
+	rm -f $(TARGET) libmemory.so $(OBJS) $(DEPS); 
 	rm -rf $(DSYM)
 
 main: main.c libmemory.so

@@ -11,6 +11,8 @@
 #include "bits.h"
 #include "memory.h"
 
+void __attribute__ ((constructor)) init_mallocator(void);
+void __attribute__ ((destructor)) finalize_mallocator(void);
 
 Memory M;
 int fd;
@@ -241,8 +243,8 @@ int deallocate_cache(void *addr) {
     iteratorSlab = M.C[ci].S; // remember within each slab is the bitmap and slab struct
     while(iteratorSlab != NULL)
     {
-        int start_addr = iteratorSlab->addr;
-        int end_addr = iteratorSlab->addr + M.C[ci].max_slots * M.C[ci].slot_size; // basically the start slot address to the total slots times the size of each slot
+        void* start_addr = iteratorSlab->addr;
+        void* end_addr = iteratorSlab->addr + M.C[ci].max_slots * M.C[ci].slot_size; // basically the start slot address to the total slots times the size of each slot
         if(addr >= start_addr && addr <= end_addr)
 			found = 1;	
             break; // found the cache and the slab as well
@@ -309,7 +311,7 @@ int deallocate_cache(void *addr) {
   int bitIndex = slotIndex/8; 
   // the specific bit position is determined by slotIndex%8 
   int pos = slotIndex%8;
-  if(getbit(iteratorSlab->bitmap+bitIndex, pos) == 0)
+  if(getbit(*(iteratorSlab->bitmap+bitIndex), pos) == 0)
     return -1;
   
   /*
@@ -529,16 +531,19 @@ void test_slab_allocator() {
 
 }
 
+/*
 int main (int argc, char *argv []) {
 
-  init_mallocator();
+  //init_mallocator();
 
   // test_region_allocator();
 
   test_slab_allocator();
 
-  finalize_mallocator();
+  //finalize_mallocator();
 
   return 0;
   
 }
+*/
+
